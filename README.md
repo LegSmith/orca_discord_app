@@ -17,7 +17,9 @@ Orca를 켜면 활동이 자동으로 등록되고, 끄면 사라집니다. Disc
 
 [Releases](https://github.com/LegSmith/orca_discord_app/releases)에서 `OrcaPresence-Setup-x.y.z.exe`를 받아 실행합니다. Python은 설치하지 않아도 됩니다.
 
-마법사는 언어(한국어/영어) 선택으로 시작하고, 이어서 설치 위치와 **Discord Application ID**를 물어봅니다. ID는 기본값 그대로 두면 `Orca AI Agent IDE`로 표시되고, 직접 만든 앱을 쓰려면 그 ID를 넣으면 됩니다. **Windows 시작 시 자동 실행** 체크박스를 켜두면 로그인할 때마다 백그라운드에서 실행되고, 마지막 화면에서 바로 실행할지 물어봅니다.
+마법사는 언어(한국어/영어) 선택으로 시작하고, 이어서 설치 위치와 **Discord Application ID**를 물어봅니다. Application ID는 반드시 입력해야 다음으로 넘어갈 수 있습니다 — [Discord Developer Portal](https://discord.com/developers/applications)에서 애플리케이션을 만들고 **General Information** 탭의 Application ID를 복사해 넣으세요. **Windows 시작 시 자동 실행** 체크박스를 켜두면 로그인할 때마다 백그라운드에서 실행되고, 마지막 화면에서 바로 실행할지 물어봅니다.
+
+아이콘까지 표시하려면 Developer Portal의 **Rich Presence > Art Assets**에 이미지를 `orca`라는 키로 등록해야 합니다.
 
 관리자 권한이 필요 없으며 사용자 폴더(`%LocalAppData%\Programs\OrcaPresence`)에 설치됩니다. 제거는 Windows 설정의 **앱 > 설치된 앱**에서 하면 됩니다.
 

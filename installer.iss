@@ -12,9 +12,6 @@
 #define AppURL "https://github.com/LegSmith/orca_discord_app"
 #define AppExeName "OrcaPresence.exe"
 
-; CLIENT_ID 입력 페이지의 기본값. orca_presence.py의 DEFAULT_CLIENT_ID와 같은 값이다.
-#define DefaultClientId "1526762915376533706"
-
 ; Korean.isl은 Inno Setup 기본 설치에 포함되지 않는 비공식 번역이다.
 ; 없으면 영어 마법사로만 빌드되도록 조건부로 처리한다.
 #define KoreanIsl AddBackslash(CompilerPath) + "Languages\Korean.isl"
@@ -64,18 +61,18 @@ korean.StartupTask=Windows 시작 시 자동으로 실행 (권장)
 korean.StartupGroup=추가 작업:
 korean.ClientIdTitle=Discord Application ID
 korean.ClientIdSubtitle=Discord 프로필에 표시할 앱을 지정합니다.
-korean.ClientIdDesc=Discord Developer Portal에서 만든 애플리케이션의 ID를 입력하세요.%n%n기본값을 그대로 두면 Orca AI Agent IDE로 표시됩니다. 직접 만든 앱을 쓰려면 해당 ID로 바꾸세요. 설치 후 config.ini에서 변경할 수도 있습니다.
+korean.ClientIdDesc=Discord Developer Portal에서 만든 애플리케이션의 ID를 입력하세요.%n%nDeveloper Portal의 General Information 탭에 있는 Application ID를 복사해 넣으면 됩니다. 이 값이 있어야 Discord에 활동을 표시할 수 있습니다.%n%n설치 후에도 설치 폴더의 config.ini에서 변경할 수 있습니다.
 korean.ClientIdLabel=Application ID:
-korean.ClientIdEmpty=Application ID를 입력하세요.
+korean.ClientIdEmpty=Application ID를 입력해야 설치를 계속할 수 있습니다.
 korean.ClientIdInvalid=Application ID는 숫자로만 이루어져야 합니다.%n%nDiscord Developer Portal의 General Information 탭에서 확인할 수 있습니다.
 #endif
 english.StartupTask=Run automatically when Windows starts (recommended)
 english.StartupGroup=Additional tasks:
 english.ClientIdTitle=Discord Application ID
 english.ClientIdSubtitle=Choose which app appears on your Discord profile.
-english.ClientIdDesc=Enter the ID of the application you created in the Discord Developer Portal.%n%nLeaving the default shows it as Orca AI Agent IDE. To use your own app, replace it with that ID. You can also change this later in config.ini.
+english.ClientIdDesc=Enter the ID of the application you created in the Discord Developer Portal.%n%nCopy the Application ID from the General Information tab of the Developer Portal. Without it the activity cannot be shown on Discord.%n%nYou can change it later in config.ini in the install folder.
 english.ClientIdLabel=Application ID:
-english.ClientIdEmpty=Please enter an Application ID.
+english.ClientIdEmpty=You must enter an Application ID to continue.
 english.ClientIdInvalid=The Application ID must contain digits only.%n%nYou can find it on the General Information tab of the Discord Developer Portal.
 
 [Tasks]
@@ -118,8 +115,8 @@ begin
     ExpandConstant('{cm:ClientIdSubtitle}'),
     ExpandConstant('{cm:ClientIdDesc}'));
 
+  // 기본값을 채우지 않는다. 반드시 직접 입력해야 다음으로 넘어갈 수 있다.
   ClientIdPage.Add(ExpandConstant('{cm:ClientIdLabel}'), False);
-  ClientIdPage.Values[0] := '{#DefaultClientId}';
 end;
 
 { 재설치일 때는 기존 config.ini의 값을 미리 채워 넣는다.

@@ -17,7 +17,9 @@ The activity is registered automatically when Orca starts and disappears when it
 
 Download `OrcaPresence-Setup-x.y.z.exe` from [Releases](https://github.com/LegSmith/orca_discord_app/releases) and run it. You do not need Python.
 
-The wizard starts by asking for a language (Korean or English), then for an install location and a **Discord Application ID**. Leaving the ID at its default shows the activity as `Orca AI Agent IDE`; enter your own app's ID to use that instead. A **Run automatically when Windows starts** checkbox makes it launch in the background at every login, and the final page asks whether to start it right away.
+The wizard starts by asking for a language (Korean or English), then for an install location and a **Discord Application ID**. The Application ID is required — create an application in the [Discord Developer Portal](https://discord.com/developers/applications) and copy the Application ID from its **General Information** tab. A **Run automatically when Windows starts** checkbox makes it launch in the background at every login, and the final page asks whether to start it right away.
+
+For the icon to show up, upload an image under **Rich Presence > Art Assets** in the Developer Portal with the key `orca`.
 
 It installs per-user (`%LocalAppData%\Programs\OrcaPresence`) and needs no administrator rights. Uninstall from **Apps > Installed apps** in Windows Settings.
 

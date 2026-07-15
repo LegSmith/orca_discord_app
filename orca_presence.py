@@ -15,8 +15,9 @@ from PIL import Image
 from pypresence import Presence
 
 
-# Discord Developer Portal에서 복사한 Application ID.
-# 설치 프로그램이 config.ini에 값을 써두면 그쪽이 우선하고, 없으면 이 값을 쓴다.
+# config.ini가 없을 때 쓰는 Application ID.
+# 설치 프로그램은 ID 입력을 강제하므로 설치본에서는 항상 config.ini 값이 쓰인다.
+# 이 값은 소스코드를 그대로 실행할 때의 폴백이다.
 DEFAULT_CLIENT_ID = "1526762915376533706"
 
 # EXE와 같은 폴더에 놓이는 설정 파일 이름
