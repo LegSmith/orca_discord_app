@@ -15,10 +15,15 @@ jobs:
   build:
     runs-on: windows-latest
 
-    steps:
-      - uses: actions/checkout@v4
+    # Windows 러너는 영문 로케일이라 stdout이 cp1252로 잡힌다. 한글을 출력하면
+    # UnicodeEncodeError가 나므로 Python을 UTF-8 모드로 돌린다.
+    env:
+      PYTHONUTF8: "1"
 
-      - uses: actions/setup-python@v5
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: pip

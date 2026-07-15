@@ -7,10 +7,18 @@ PyInstaller의 --icon과 Inno Setup의 SetupIconFile은 .ico만 받으므로
     py tools\\make_icon.py
 """
 
+import sys
 from pathlib import Path
 
 from PIL import Image
 
+
+# 영문 Windows는 출력 인코딩이 cp1252라 한글을 출력하면 UnicodeEncodeError가 난다.
+# 오류 메시지는 stderr로 나가므로 양쪽 모두 UTF-8로 바꾸고,
+# 그래도 표현이 안 되는 문자는 죽는 대신 대체하도록 한다.
+for stream in (sys.stdout, sys.stderr):
+    if hasattr(stream, "reconfigure"):
+        stream.reconfigure(encoding="utf-8", errors="replace")
 
 # Windows가 상황별로 골라 쓰는 크기들을 하나의 .ico에 모두 담는다.
 ICON_SIZES = [(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)]
