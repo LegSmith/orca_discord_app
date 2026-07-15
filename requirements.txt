@@ -1,0 +1,12 @@
+# 프로그램 실행에 필요한 라이브러리
+#
+# 설치:
+#   py -m pip install -r requirements.txt
+
+# Discord 데스크톱 앱의 로컬 IPC에 연결해 Rich Presence(프로필 활동)를 등록한다.
+# orca_presence.py의 connect_presence() / update_presence()에서 사용한다.
+pypresence>=4.3.0
+
+# 실행 중인 프로세스 목록을 조회해 Orca가 켜져 있는지 확인한다.
+# orca_presence.py의 is_orca_running()에서 사용한다.
+psutil>=5.9.0
