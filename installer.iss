@@ -177,7 +177,8 @@ begin
   end;
 end;
 
-{ [INI] 항목의 {code:GetClientId}가 이 값을 가져간다. }
+// [INI] 항목의 {code:GetClientId}가 이 값을 가져간다.
+// (중괄호 주석은 중첩되지 않으므로 Inno 상수를 언급할 때는 // 를 쓴다.)
 function GetClientId(Param: String): String;
 begin
   Result := Trim(ClientIdPage.Values[0]);
