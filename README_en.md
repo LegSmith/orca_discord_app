@@ -12,11 +12,26 @@ The activity is registered automatically when Orca starts and disappears when it
 
 - Windows 10 / 11
 - Discord **desktop app** (Rich Presence does not show up on the web version)
-- Python 3.9 or later
 
-## Install and run
+## Install
 
-From PowerShell:
+Download `OrcaPresence-Setup-x.y.z.exe` from [Releases](https://github.com/LegSmith/orca_discord_app/releases) and run it. You do not need Python.
+
+The wizard starts by asking for a language (Korean or English), then for an install location and a **Discord Application ID**. Leaving the ID at its default shows the activity as `Orca AI Agent IDE`; enter your own app's ID to use that instead. A **Run automatically when Windows starts** checkbox makes it launch in the background at every login, and the final page asks whether to start it right away.
+
+It installs per-user (`%LocalAppData%\Programs\OrcaPresence`) and needs no administrator rights. Uninstall from **Apps > Installed apps** in Windows Settings.
+
+> The program is unsigned, so SmartScreen may warn you. Click **More info > Run anyway**.
+
+## Usage
+
+Once running, an Orca icon appears in the notification area at the right of the taskbar. Right-click it to see the current status (`Orca 미실행` / `Discord 연결 대기 중` / `Discord에 표시 중`) and to **종료** (quit) the program.
+
+If you cannot see the icon, click the `^` button in the notification area to expand hidden icons.
+
+## Run from source
+
+For development you will need Python 3.9 or later.
 
 ```powershell
 py -m pip install -r requirements.txt
@@ -25,25 +40,33 @@ py .\orca_presence.py
 
 Press `Ctrl + C` to stop.
 
-## Build a single EXE
+## Building it yourself
 
-If you would rather not install Python on the target machine, build an EXE.
+Pushing to `master` or running the workflow manually from the Actions tab builds the installer for you. Pushing a tag like `v1.0.0` also publishes it to Releases.
+
+To build locally, install [Inno Setup 6](https://jrsoftware.org/isdl.php) and run:
 
 ```powershell
-py -m pip install --upgrade pyinstaller
-py -m PyInstaller --noconfirm --clean --onefile --windowed --name "OrcaPresence" .\orca_presence.py
+py -m pip install -r requirements.txt pyinstaller
+py tools\make_icon.py
+py -m PyInstaller --noconfirm --clean --onefile --windowed --name OrcaPresence --icon orca.ico --add-data "orca.png;." orca_presence.py
+iscc installer.iss
 ```
 
-The result lands at `.\dist\OrcaPresence.exe`, and that single file is all you need to distribute.
-
-To start it automatically at login, put a **shortcut** to the EXE in the folder that opens via `Win + R` → `shell:startup`.
+The installer lands in `installer_output\`. For a Korean wizard, drop [Korean.isl](https://raw.githubusercontent.com/jrsoftware/issrc/main/Files/Languages/Unofficial/Korean.isl) into Inno Setup's `Languages` folder; without it the build falls back to English.
 
 ## Configuration
 
-Edit the constants at the top of `orca_presence.py` and the values in `update_presence()`.
+The Application ID lives in `config.ini` in the install folder. Edit it and restart the program — no reinstall needed.
+
+```ini
+[discord]
+client_id = 1526762915376533706
+```
+
+Everything else requires editing `orca_presence.py` and rebuilding.
 
 ```python
-CLIENT_ID = "1526762915376533706"   # Discord Application ID
 IMAGE_KEY = "orca"                  # Image key registered in the Developer Portal
 ORCA_PROCESS_NAME = "orca.exe"      # Process name to watch for
 
@@ -51,8 +74,6 @@ details="AI 에이전트와 개발 중"      # Text shown on the profile
 state="Orca IDE 사용 중"
 large_text="Orca AI Agent IDE"
 ```
-
-If you use the EXE, rebuild it after making changes.
 
 ## Troubleshooting
 

@@ -1,0 +1,86 @@
+name: Build Windows Installer
+
+on:
+  push:
+    branches: [master]
+    tags: ["v*"]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: 의존성 설치
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller pillow
+
+      - name: 아이콘 생성 (orca.png -> orca.ico)
+        run: python tools/make_icon.py
+
+      # --add-data로 orca.png를 번들에 넣어야 트레이 아이콘이 런타임에 이미지를 찾는다.
+      - name: EXE 빌드
+        run: >
+          pyinstaller --noconfirm --clean --onefile --windowed
+          --name OrcaPresence --icon orca.ico
+          --add-data "orca.png;." orca_presence.py
+
+      - name: Inno Setup 준비
+        shell: pwsh
+        run: |
+          $iscc = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+
+          if (-not (Test-Path $iscc)) {
+            Write-Host "Inno Setup이 없어 설치합니다."
+            choco install innosetup -y --no-progress
+          }
+
+          if (-not (Test-Path $iscc)) {
+            throw "ISCC.exe를 찾을 수 없습니다: $iscc"
+          }
+
+          "ISCC=$iscc" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+          # Korean.isl은 Inno Setup 기본 설치에 포함되지 않는 비공식 번역이다.
+          # 받지 못해도 installer.iss가 영어 마법사로 폴백하므로 빌드는 계속한다.
+          $url = "https://raw.githubusercontent.com/jrsoftware/issrc/main/Files/Languages/Unofficial/Korean.isl"
+          $dest = "C:\Program Files (x86)\Inno Setup 6\Languages\Korean.isl"
+
+          try {
+            Invoke-WebRequest -Uri $url -OutFile $dest
+            Write-Host "한국어 언어 파일을 받았습니다."
+          } catch {
+            Write-Warning "한국어 언어 파일을 받지 못해 영어로만 빌드합니다: $_"
+          }
+
+      - name: 설치 프로그램 빌드
+        shell: pwsh
+        run: "& $env:ISCC installer.iss"
+
+      - name: 결과물 업로드
+        uses: actions/upload-artifact@v4
+        with:
+          name: OrcaPresence-Setup
+          path: installer_output/*.exe
+          if-no-files-found: error
+
+      - name: 태그 푸시 시 릴리스 생성
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: installer_output/*.exe
+          generate_release_notes: true
